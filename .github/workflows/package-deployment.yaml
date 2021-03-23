@@ -25,6 +25,8 @@ jobs:
       - name: Create package
         run: |
           sed -i "s/\${VERSION_SHA}/${{ github.sha }}/g" index.js
-          cat index.js
           zip -r ${{ github.sha }}.zip index.js
-          ls -la
+
+      - name: Upload package
+        run: |
+          aws s3 cp ./${{ github.sha }}.zip s3://spacelift-demo-preview-environments-service/
