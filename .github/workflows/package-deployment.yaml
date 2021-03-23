@@ -26,5 +26,5 @@ jobs:
         run: |
           sed -i "s/\${VERSION_SHA}/${{ github.sha }}/g" index.js
           cat index.js
-          tar -zcf ${{ github.sha }}.tar.gz index.js
+          zip -r ${{ github.sha }}.zip index.js
           ls -la
