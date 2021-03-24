@@ -1,0 +1,40 @@
+name: Package Deployment
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+
+jobs:
+  preview-environment:
+    name: Create or update Preview Environment
+    runs-on: ubuntu-latest
+
+    steps:
+      - id: calculate-environment-id
+        run: |
+          echo "::set-output name=environment::$(echo -n \"${{ github.event.organization }}${{ github.event.repository }}${{ github.event.number }}\" | sha256sum | cut -d " " -f 1 | head -c 7)"
+      - id: create file
+        uses: spacelift-io/update-file-action@v1.0.0
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          owner: spacelift-io
+          repository: demo-preview-environments-manager
+          target-file-path: 'hello-service/environments/${{ github.event.organization }}-${{ github.event.repository }}-${{ github.event.number }}-${{ steps.calculate-environment-id.outputs.environment }}.tf'
+          content: |
+            module "instance_1" {
+              source = "../template"
+
+              manager_stack_id        = var.current_stack_id
+              infra_repository_branch = "master"
+              aws_role                = var.aws_role
+              certificate_arn         = var.certificate_arn
+              code_version            = "${{ github.sha }}"
+              domain_name             = var.domain_name
+              domain_name_zone_id     = var.domain_name_zone_id
+              environment             = "${{ steps.calculate-environment-id.outputs.environment }}"
+
+              providers = {
+                spacelift = spacelift
+              }
+            }
+
