@@ -19,9 +19,9 @@ jobs:
           github-token: ${{ secrets.GH_TOKEN }}
           owner: spacelift-io
           repository: demo-preview-environments-manager
-          target-file-path: 'hello-service/environments/${{ github.event.organization }}-${{ github.event.repository }}-${{ github.event.number }}-${{ steps.calculate-environment-id.outputs.environment }}.tf'
+          target-file-path: 'hello-service/environments/${{ github.event.organization.login }}-${{ github.event.repository.name }}-${{ github.event.number }}-${{ steps.calculate-environment-id.outputs.environment }}.tf'
           content: |
-            module "instance_1" {
+            aamodule "${{ github.event.organization.login }}-${{ github.event.repository.name }}-${{ github.event.number }}-${{ steps.calculate-environment-id.outputs.environment }}" {
               source = "../template"
 
               manager_stack_id        = var.current_stack_id
@@ -37,4 +37,3 @@ jobs:
                 spacelift = spacelift
               }
             }
-
