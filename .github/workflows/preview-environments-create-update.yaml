@@ -1,4 +1,4 @@
-name: Package Deployment
+name: Create or Update Preview Environment
 
 on:
   pull_request:
@@ -6,14 +6,14 @@ on:
 
 jobs:
   preview-environment:
-    name: Create or update Preview Environment
+    name: Create or Update Preview Environment
     runs-on: ubuntu-latest
 
     steps:
       - id: calculate-environment-id
         run: |
           echo "::set-output name=environment::$(echo -n \"${{ github.event.organization }}${{ github.event.repository }}${{ github.event.number }}\" | sha256sum | cut -d " " -f 1 | head -c 7)"
-      - id: create file
+      - id: set-environment-file
         uses: spacelift-io/update-file-action@v1.0.0
         with:
           github-token: ${{ secrets.GH_TOKEN }}
