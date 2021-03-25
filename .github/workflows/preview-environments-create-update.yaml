@@ -28,7 +28,7 @@ jobs:
               infra_repository_branch = "master"
               aws_role                = var.aws_role
               certificate_arn         = var.certificate_arn
-              code_version            = "${{ github.sha }}"
+              code_version            = "${{ github.event.pull_request.head.sha }}"
               domain_name             = var.domain_name
               environment             = "${{ steps.calculate-environment-id.outputs.environment }}"
               push_policy_id          = var.push_policy_id
